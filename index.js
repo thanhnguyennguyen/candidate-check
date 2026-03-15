@@ -10,23 +10,23 @@ const telegramToken = process.env.TELEGRAM_TOKEN
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const main = async () => {
-  while (true) {
-    const { data } = await axios.get(
-      'https://www.vicmaster.xyz/api/candidates/masternodes?page=1&limit=150&sortBy=capacity&sortDesc=true',
-    )
-    const masternodes = data.items
-    if (!masternodes || masternodes.length === 0) {
-      return
+    while (true) {
+        const { data } = await axios.get(
+            'https://www.vicmaster.xyz/api/candidates/masternodes?page=1&limit=150&sortBy=capacity&sortDesc=true',
+        )
+        const masternodes = data.items
+        if (!masternodes || masternodes.length === 0) {
+            return
+        }
+        const masternodeList = masternodes.filter((masternode) => masternode.candidate)
+        for (const c of candidateList) {
+            if (masternodeList.includes(c)) {
+                continue
+            }
+            await notifyTelegram(`Masternode ${c} is not in the list`, telegramToken, telegramChatId, true)
+        }
+        await sleep(60 * 1000)
     }
-    const masternodeList = masternodes.filter((masternode) => masternode.candidate)
-    for (const c of candidateList) {
-      if (masternodeList.includes(c)) {
-        continue
-      }
-      await notifyTelegram(`Masternode ${c} is not in the list`, telegramToken, telegramChatId, true)
-    }
-    await sleep(60 * 1000)
-  }
 }
 
 main()
