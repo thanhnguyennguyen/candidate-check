@@ -18,9 +18,10 @@ const main = async () => {
         if (!masternodes || masternodes.length === 0) {
             return
         }
-        const masternodeList = masternodes.filter((masternode) => masternode.candidate)
+        const masternodeList = masternodes.map((masternode) => masternode.candidate)
         for (const c of candidateList) {
             if (masternodeList.includes(c)) {
+                console.log(`Masternode ${c} is in the list`)
                 continue
             }
             await notifyTelegram(`Masternode ${c} is not in the list`, telegramToken, telegramChatId, true)
