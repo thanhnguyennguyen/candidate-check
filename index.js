@@ -26,7 +26,7 @@ const main = async () => {
             }
             await notifyTelegram(`Masternode ${c} is not in the list`, telegramToken, telegramChatId, true)
         }
-        await sleep(60 * 1000)
+        await sleep(5 * 60 * 1000)
     }
 }
 
