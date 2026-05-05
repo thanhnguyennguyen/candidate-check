@@ -3,31 +3,32 @@ const { notifyTelegram } = require('noti_bot')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const candidateList = process.env.CANDIDATE_LIST.split(',')
+const localList = process.env.CANDIDATE_LIST.split(',')
+const candidateUrl = process.env.CANDIDATE_URL
 const telegramChatId = process.env.TELEGRAM_CHAT_ID
 const telegramToken = process.env.TELEGRAM_TOKEN
+const runOnce = process.env.RUN_ONCE === 'true'
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const main = async () => {
-    while (true) {
+    while (!runOnce) {
         const { data } = await axios.get(
-            'https://www.vicmaster.xyz/api/candidates/masternodes?page=1&limit=150&sortBy=capacity&sortDesc=true',
+            candidateUrl
         )
-        const masternodes = data.items
-        if (!masternodes || masternodes.length === 0) {
+        const remoteList = data.items
+        if (!remoteList || remoteList.length === 0) {
             return
         }
-        const masternodeList = masternodes.map((masternode) => masternode.candidate)
-        for (const c of candidateList) {
-            if (masternodeList.includes(c)) {
-                console.log(`Masternode ${c} is in the list`)
-                continue
+        const remoteMap = new Map(remoteList.map(c => [c.candidate, c]))
+        for (const c of localList) {
+            if (!remoteMap.has(c)) {
+                await notifyTelegram(`Candidate ${c} is not in the list`, telegramToken, telegramChatId, true)
             }
-            await notifyTelegram(`Masternode ${c} is not in the list`, telegramToken, telegramChatId, true)
         }
         await sleep(5 * 60 * 1000)
     }
+    return
 }
 
 main()
