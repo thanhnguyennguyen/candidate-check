@@ -8,6 +8,7 @@ const candidateUrl = process.env.CANDIDATE_URL
 const telegramChatId = process.env.TELEGRAM_CHAT_ID
 const telegramToken = process.env.TELEGRAM_TOKEN
 const runOnce = process.env.RUN_ONCE === 'true'
+const targetStatus = process.env.TARGET_STATUS
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
@@ -20,9 +21,9 @@ const main = async () => {
         if (!remoteList || remoteList.length === 0) {
             return
         }
-        const remoteMap = new Map(remoteList.map(c => [c.candidate, c]))
+        const remoteMap = new Map(remoteList.map(c => [c.candidate, c.status]))
         for (const c of localList) {
-            if (!remoteMap.has(c)) {
+            if (!remoteMap.has(c) || remoteMap.get(c) !== targetStatus) {
                 await notifyTelegram(`Candidate ${c} is not in the list`, telegramToken, telegramChatId, true)
             }
         }

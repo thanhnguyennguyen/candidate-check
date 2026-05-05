@@ -18,6 +18,7 @@ jobs:
       RUN_ONCE: "true"
       CANDIDATE_LIST: ${{ secrets.CANDIDATE_LIST }}
       CANDIDATE_URL: ${{ secrets.CANDIDATE_URL }}
+      TARGET_STATUS: ${{ secrets.TARGET_STATUS }}
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     steps:
