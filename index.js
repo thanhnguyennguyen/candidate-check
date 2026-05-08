@@ -21,14 +21,14 @@ const main = async () => {
         if (!remoteList || remoteList.length === 0) {
             return
         }
-        let remoteMap = new Map()
+        let remoteMap = {}
         for (const c of remoteList) {
             if (c?.candidate != null) {
-                remoteMap.set(c.candidate, c.status)
+                remoteMap[c.candidate] = c.status
             }
         }
         for (const c of localList) {
-            if (!remoteMap.has(c) || remoteMap.get(c) !== targetStatus) {
+            if (!remoteMap[c] || remoteMap[c] !== targetStatus) {
                 console.log(`Candidate ${c} is not in the list`)
                 await notifyTelegram(`Candidate ${c} is not in the list`, telegramToken, telegramChatId, true)
             }
