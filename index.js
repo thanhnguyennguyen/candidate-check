@@ -29,7 +29,7 @@ const main = async () => {
         }
         for (const c of localList) {
             if (!remoteMap[c] || remoteMap[c] !== targetStatus) {
-                console.log(`Candidate ${c} is not in the list`)
+                console.log(`Candidate is not in the list`)
                 await notifyTelegram(`Candidate ${c} is not in the list`, telegramToken, telegramChatId, true)
             }
         }
